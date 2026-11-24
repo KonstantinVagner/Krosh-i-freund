@@ -10,9 +10,9 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;touch-action
 .bg{position:fixed;inset:-20px;background-size:cover;background-position:center;filter:blur(9px) brightness(.45);z-index:-1;transition:.4s}
 .top{background:rgba(0,0,0,.65);padding:9px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:800}
 .mid{flex:1;display:flex;align-items:center;justify-content:center;padding:8px}
-.card{background:linear-gradient(145deg,#1b2845,#0d1321);border:2px solid #4cc9f0;border-radius:20px;padding:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 18px 35px rgba(0,0,0,.85);transform-style:preserve-3d}
+.card{background:linear-gradient(145deg,#1b2845,#0d1321);border:2px solid #4cc9f0;border-radius:20px;padding:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 18px 35px rgba(0,0,0,.85);transform-style:preserve-3d;transition:transform .1s ease-out}
 .loc{display:inline-block;background:#ff6d00;font-size:11px;font-weight:800;padding:3px 10px;border-radius:14px;margin-bottom:6px;text-transform:uppercase}
-.stg{position:relative;width:100%;height:125px;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.3);box-shadow:inset 0 -20px 25px rgba(0,0,0,.65);margin-bottom:8px}
+.stg{position:relative;width:100%;height:125px;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.3);box-shadow:inset 0 -20px 25px rgba(0,0,0,.65);margin-bottom:8px;background:#1e2f4d}
 .sbg{width:100%;height:100%;object-fit:cover}
 .act{position:absolute;bottom:5px;width:66px;height:66px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-shadow:0 6px 14px rgba(0,0,0,.7);transition:.2s}
 .fa{left:8px;border:3px solid #ff758f}.ka{right:8px;border:3px solid #4cc9f0}
@@ -23,16 +23,16 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;touch-action
 .m-fr{background:rgba(255,117,143,.22);border-left:4px solid #ff758f;margin-right:18px}
 .m-kr{background:rgba(76,201,240,.22);border-right:4px solid #4cc9f0;margin-left:18px;text-align:right}
 .opts{display:flex;flex-direction:column;gap:7px}
-.btn{background:#274060;border:none;border-bottom:4px solid #101b2b;color:#fff;padding:10px;border-radius:12px;font-size:14px;font-weight:800}
+.btn{background:#274060;border:none;border-bottom:4px solid #101b2b;color:#fff;padding:10px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer}
 .btn:active{transform:translateY(3px);border-bottom-width:1px}.btn.ok{background:#2b9348;border-color:#004b23}.btn.bad{background:#d90429;border-color:#6a040f}
 </style>
 </head>
 <body>
 <div class="bg" id="bg"></div>
-<div class="top"><div>Этап <span id="st">1/5</span></div><button id="snd" style="background:rgba(255,255,255,.2);border:1px solid #fff;color:#fff;padding:3px 9px;border-radius:10px">🔊 ВКЛ</button><div><span id="sc">0</span> ⭐</div></div>
+<div class="top"><div>Этап <span id="st">1/5</span></div><button id="snd" style="background:rgba(255,255,255,.2);border:1px solid #fff;color:#fff;padding:3px 9px;border-radius:10px;cursor:pointer">🔊 ВКЛ</button><div><span id="sc">0</span> ⭐</div></div>
 <div class="mid"><div class="card" id="crd">
   <div class="loc" id="loc"></div>
-  <div class="stg"><img class="sbg" id="pic" src="1.png"><img class="act fa" id="fr" src="nyusha.png" onerror="this.style.display='none'"><img class="act ka" id="kr" src="krosh.png" onerror="this.style.display='none'"></div>
+  <div class="stg"><img class="sbg" id="pic" src="1.png" onerror="this.style.opacity=0"><img class="act fa" id="fr" src="nyusha.png" onerror="this.style.display='none'"><img class="act ka" id="kr" src="krosh.png" onerror="this.style.display='none'"></div>
   <div class="chat">
     <div class="msg-b m-fr" id="t-fr"></div>
     <div class="msg-b m-kr" id="t-kr"></div>
@@ -49,59 +49,59 @@ function talk(pitch,len,who){
 }
 function clap(){if(mt||!ax)return;for(let k=0;k<22;k++)setTimeout(()=>{if(mt)return;const b=ax.createBuffer(1,ax.sampleRate*.07,ax.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(ax.sampleRate*.02));const s=ax.createBufferSource(),f=ax.createBiquadFilter(),g=ax.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=1000+Math.random()*500;g.gain.value=.22;s.connect(f);f.connect(g);g.connect(ax.destination);s.start()},k*110)}
 document.getElementById('snd').onclick=function(){mt=!mt;this.textContent=mt?'🔇 ВЫКЛ':'🔊 ВКЛ';if(!mt)talk(560,3,'kr')};
-document.addEventListener('touchmove',e=>{const t=e.touches;document.getElementById('crd').style.transform='rotateX('+(innerHeight/2-t.clientY)/25+'deg) rotateY('+(t.clientX-innerWidth/2)/25+'deg)'});
+document.addEventListener('touchmove',e=>{const t=e.touches[0];document.getElementById('crd').style.transform='rotateX('+(innerHeight/2-t.clientY)/25+'deg) rotateY('+(t.clientX-innerWidth/2)/25+'deg)'});
 document.addEventListener('touchend',()=>{document.getElementById('crd').style.transform='none'});
 
-const qs=new Array(
+const qs=[
   {l:"Качели Нюши",img:"1.png",f:"nyusha.png",p:680,
    q:"Нюша: «Крош, в корзинке у качелей было 15 цветов, 6 я вплела в венок. Сколько осталось?»",
    k:"Крош: «Хм... 15 минус 6... Подскажи, сколько это?»",
    ok:"Крош: «Точно, 9 цветов! Спасибо, друг!»",
    no:"Нюша: «Ой, нет! Осталось 9 цветов!»",
-   o:new Array("9 цветов","8 цветов","11 цветов"),a:0},
+   o:["9 цветов","8 цветов","11 цветов"],a:0},
   {l:"Домик Ёжика",img:"2.png",f:"ezhik.png",p:460,
    q:"Ёжик: «На яблоне у мостика висело 13 яблок, 4 упали на траву. Сколько осталось на дереве?»",
    k:"Крош: «Ёлки-иголки, надо посчитать... 13 минус 4...»",
    ok:"Крош: «Ура! 9 яблок! Я так и знал!»",
    no:"Ёжик: «Не совсем, Крош. На ветках 9 яблок.»",
-   o:new Array("8 яблок","9 яблок","17 яблок"),a:1},
+   o:["8 яблок","9 яблок","17 яблок"],a:1},
   {l:"Домик Лосяша",img:"3.png",f:"losyash.png",p:260,
    q:"Лосяш: «Друг мой, когда лучше всего наблюдать за звёздами в мой телескоп?»",
    k:"Крош: «Так-так, когда же лучше видно звёзды?»",
    ok:"Крош: «Конечно, ясной ночью! Пошли смотреть!»",
    no:"Лосяш: «Феноменально, но нет — лучше ясной ночью!»",
-   o:new Array("В полдень","Ясной ночью","В дождь"),a:1},
+   o:["В полдень","Ясной ночью","В дождь"],a:1},
   {l:"Домик Бараша",img:"4.png",f:"barash.png",p:380,
    q:"Бараш: «Крош, вдохновение пропало! Подскажи рифму к слову РУЧЕЁК!»",
    k:"Крош: «Ручеёк... ручеёк... Что же сюда подходит?»",
    ok:"Бараш: «Огонёк! Гениально, Крош, записываю!»",
    no:"Бараш: «Нет, рифма не складывается... Лучше Огонёк!»",
-   o:new Array("Огонёк","Тропинка","Домик"),a:0},
+   o:["Огонёк","Тропинка","Домик"],a:0},
   {l:"В гостях у Нюши",img:"1.png",f:"barash.png",p:420,
    q:"Друзья: «Крош, у тебя в рюкзаке 8 морковок и 7 яблок. Сколько всего угощений?»",
    k:"Крош: «8 плюс 7... Ребята ждут ответ, выручай!»",
    ok:"Крош: «15 угощений! Налетайте, друзья!»",
    no:"Друзья: «Эх, Крош, 8 + 7 будет 15 угощений!»",
-   o:new Array("15 угощений","14 угощений","16 угощений"),a:0}
-);
+   o:["15 угощений","14 угощений","16 угощений"],a:0}
+];
 
 let ix=0,sc=0,lk=0;
 function go(){
   lk=0;
-  const fr=document.getElementById('fr'),kr=document.getElementById('kr'),tf=document.getElementById('t-fr'),tk=document.getElementById('t-kr');
+  const fr=document.getElementById('fr'),kr=document.getElementById('kr'),tf=document.getElementById('t-fr'),tk=document.getElementById('t-kr'),pic=document.getElementById('pic');
   kr.classList.remove('jmp');fr.classList.remove('jmp');
   if(ix>=qs.length){
     document.getElementById('st').textContent='Ура!';document.getElementById('loc').textContent='Праздник в долине!';
-    document.getElementById('pic').src='1.png';document.getElementById('bg').style.backgroundImage='url(1.png)';
+    pic.style.opacity=1;pic.src='1.png';document.getElementById('bg').style.backgroundImage='url(1.png)';
     fr.style.display='block';fr.src='nyusha.png';fr.classList.add('jmp');kr.classList.add('jmp');
     tf.textContent='Друзья: «Какой ты умный, Крош! На все вопросы ответил!»';
     tk.innerHTML='Крош: «Это всё благодаря тебе! Мы собрали <b>'+sc+' из 5 ⭐</b>!»';
-    new Array(523,659,784,1046).forEach((f,i)=>setTimeout(()=>tn(f,.3,'triangle',.13),i*130));clap();
+    [523,659,784,1046].forEach((f,i)=>setTimeout(()=>tn(f,.3,'triangle',.13),i*130));clap();
     const ob=document.getElementById('opts');ob.innerHTML='';const b=document.createElement('button');b.className='btn ok';b.textContent='Сыграть ещё раз';
     b.onclick=()=>{ix=0;sc=0;document.getElementById('sc').textContent=0;go()};ob.appendChild(b);return;
   }
   const c=qs[ix];document.getElementById('st').textContent=(ix+1)+'/5';document.getElementById('loc').textContent=c.l;
-  document.getElementById('pic').src=c.img;document.getElementById('bg').style.backgroundImage='url('+c.img+')';
+  pic.style.opacity=1;pic.src=c.img;document.getElementById('bg').style.backgroundImage='url('+c.img+')';
   fr.style.display='block';fr.src=c.f;
   tf.textContent=c.q;tk.textContent=c.k;
   talk(c.p,6,'fr');setTimeout(()=>talk(560,4,'kr'),650);
@@ -114,7 +114,7 @@ function go(){
         b.classList.add('ok');sc++;document.getElementById('sc').textContent=sc;
         tk.textContent=c.ok;kr.classList.add('jmp');
         talk(640,5,'kr');
-        new Array(520,660,880).forEach((f,k)=>setTimeout(()=>tn(f,.12,'triangle',.12),k*75));
+        [520,660,880].forEach((f,k)=>setTimeout(()=>tn(f,.12,'triangle',.12),k*75));
       }else{
         b.classList.add('bad');ob.children[c.a].classList.add('ok');
         tk.textContent=c.no;
